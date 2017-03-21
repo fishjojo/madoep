@@ -10,8 +10,8 @@ namespace madness {
           refrho.push_back(calc.make_density(world, calc.aocc, calc.amo));
           if (calc.param.nbeta != 0 && !calc.param.spin_restricted)
               refrho.push_back(calc.make_density(world, calc.bocc, calc.bmo));
-
-	  refrho[0].gaxpy(1.0, refrho[1], 1.0); //total density at position 0
+          else
+	      refrho[0] *= 2.0; //total density at position 0
 	}
 	else {
 	  read_dens_from_file(); //NYI

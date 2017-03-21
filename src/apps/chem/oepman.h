@@ -31,10 +31,12 @@ namespace madness {
 	       ,wconv(1e-6)
 	       ,oep_max_iter(50)
 	       ,readdens(false)
+	       ,solver(1)
+	       ,oep_init(1)
 	       {
                 // get the parameters from the input file
                 std::ifstream f(input.c_str());
-                position_stream(f, "oep");
+                position_stream(f, "oepman");
                 std::string s;
 
 		for(int i=0; i<3; i++) plot_NGrid[i] = 1;
@@ -42,8 +44,8 @@ namespace madness {
 
                 while (f >> s) {
                     if (s == "end") break;
-                    else if (s == "oepcov") f >> oepconv;
-		    else if (s == "wcov") f >> wconv;
+                    else if (s == "oepconv") f >> oepconv;
+		    else if (s == "wconv") f >> wconv;
 		    else if (s == "readdens") readdens = true;
 		    else if (s == "oep_thresh") f >> oep_thresh;
 		    else if (s == "solver") f >> solver;
@@ -66,7 +68,10 @@ namespace madness {
 			  i++;
 			}
 		    }
-                    else continue;
+                    else {
+			std::cout << "oep: unrecognized input keyword " << s << std::endl;
+                	MADNESS_EXCEPTION("input error",0);
+		    }
                 }
 
                }
