@@ -38,6 +38,7 @@
 
 #include <chem/SCF.h>
 #include <chem/molopt.h>
+#include <chem/oepman.h>
 #include <madness/world/worldmem.h>
 
 #if defined(HAVE_SYS_TYPES_H) && defined(HAVE_SYS_STAT_H) && defined(HAVE_UNISTD_H)
@@ -167,7 +168,7 @@ END_TIMER(world, "initialize");
           if (calc.param.derivatives) calc.derivatives(world,rho);
           if (calc.param.dipole) calc.dipole(world,rho);
           if (calc.param.response) calc.polarizability(world);
-	   calc.oep(world,rho,brho); //Xing
+	  if (calc.param.dooep) OEPMAN oep(world,calc, inpname); //Xing
         }
 
         //        if (calc.param.twoint) {

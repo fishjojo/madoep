@@ -25,12 +25,12 @@ namespace madness {
 	       double plot_box[6];	   ///< plot box coords
 
 
-               OEParameters(const std::string& input)
-	       :oepconv(1e-4)
+               OEPparameters(const std::string& input)
+	       :oep_thresh(1e-6)
+	       ,oepconv(1e-4)
 	       ,wconv(1e-6)
-	       ,oep_thresh(1e-6)
 	       ,oep_max_iter(50)
-	       :readdens(false)
+	       ,readdens(false)
 	       {
                 // get the parameters from the input file
                 std::ifstream f(input.c_str());
@@ -88,19 +88,20 @@ namespace madness {
 	  }
 	  return;
 	}
-	void construct_refdens(functionT& refrho);
+	void construct_refdens(World& world);
 	void read_dens_from_file(){return;}
 
+	void init_vxc_hfexch(functionT& vxc, functionT& vcoul);
 
-	void OEPMAN::plot_vxc(const functionT& vxc, const std::string filename);
+	void plot_vxc(const functionT& vxc, const std::string filename);
 
-	void OEPMAN::update_potential_cg(World& world, int iter, double& W, const double Win,
+	void update_potential_cg(World& world, int iter, double& W, const double Win,
                 functionT& g_old, functionT& g,
                 functionT& x_old, functionT& x,
                 functionT& s_old, functionT& s,
                 const functionT& vnuc, const functionT& vcoul, functionT& vxc, const functionT& refrho);
 
-	double OEPMAN::line_search_bt(World& world, double& W, const double Win, 
+	double line_search_bt(World& world, double& W, const double Win, 
                                   const functionT& xin, const functionT& s, const functionT& g,
                                   const functionT& vnuc, const functionT& vcoul, const functionT& refrho);
 
@@ -117,7 +118,7 @@ namespace madness {
 	,param(input)  //read params
 	{
 	  //say hello
-	  greetings();
+	  greetings(world);
 	  //get targrt density
 	  construct_refdens(world);
 	  //solve for V_xc

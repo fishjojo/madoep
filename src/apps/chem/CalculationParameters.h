@@ -58,7 +58,7 @@ struct CalculationParameters {
     double smear;               ///< Smearing parameter
     double econv;               ///< Energy convergence
     double dconv;               ///< Density convergence
-    double oepconv;		///< OEP density convergence
+    bool dooep; 		///< If true do oep calculation
     int k;                      ///< polynomial order
     double L;                   ///< User coordinates box size
     double maxrotn;             ///< Step restriction used in autoshift algorithm
@@ -130,12 +130,12 @@ struct CalculationParameters {
 
     template <typename Archive>
     void serialize(Archive& ar) {
-        ar & charge & smear & econv & dconv  & oepconv & k & L & maxrotn & nvalpha & nvbeta
+        ar & charge & smear & econv & dconv & k & L & maxrotn & nvalpha & nvbeta
         & nopen & maxiter & nio & spin_restricted;
         ar & plotlo & plothi & plotdens & plotcoul & localize & localize_pm
         & restart & restartao & save & no_compute &no_orient & maxsub & orbitalshift & npt_plot & plot_cell & aobasis;
         ar & nalpha & nbeta & nmo_alpha & nmo_beta & lo;
-        ar & core_type & derivatives & conv_only_dens & dipole;
+        ar & core_type & derivatives & conv_only_dens & dipole & dooep;
         ar & xc_data & protocol_data;
         ar & gopt & gtol & gtest & gval & gprec & gmaxiter & ginitial_hessian & algopt & tdksprop
         & nuclear_corrfac & psp_calc & print_dipole_matels & pure_ae & hessian & read_cphf & restart_cphf
@@ -147,7 +147,6 @@ struct CalculationParameters {
     , smear(0.0)
     , econv(1e-5)
     , dconv(1e-4)
-    , oepconv(1e-4)
     , k(-1)
     , L(0.0)
     , maxrotn(0.25)
@@ -175,6 +174,7 @@ struct CalculationParameters {
     , core_type("")
     , derivatives(false)
     , dipole(false)
+    , dooep(false)
     , conv_only_dens(false)
     , psp_calc(false)
     , print_dipole_matels(false)
@@ -240,9 +240,6 @@ struct CalculationParameters {
             else if (s == "dconv") {
                 f >> dconv;
             }
-	    else if (s == "oepconv") {
-		f >> oepconv;
-	    }
             else if (s == "k") {
                 f >> k;
             }
@@ -365,6 +362,9 @@ struct CalculationParameters {
             else if (s == "dipole") {
                 dipole = true;
             }
+	    else if (s == "dooep") {
+		dooep = true;
+	    }
             else if (s == "convonlydens") {
                 conv_only_dens = true;
             }
@@ -546,7 +546,6 @@ struct CalculationParameters {
         madness::print("    compute protocol ", protocol_data);
         madness::print("  energy convergence ", econv);
         madness::print(" density convergence ", dconv);
-	madness::print(" OEP density convergence ", oepconv);
         madness::print("    maximum rotation ", maxrotn);
         madness::print("    polynomial order ", k);
         madness::print("       truncate mode ", FunctionDefaults<3>::get_truncate_mode());

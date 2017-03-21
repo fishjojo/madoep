@@ -500,17 +500,6 @@ namespace madness {
         
         tensorT derivatives(World & world, const functionT& rho) const;
 
-	functionT oep(World & world, const functionT& rho, const functionT& brho);
-
-	double line_search(double& W, const double Win, const functionT& xin, const functionT& s, const functionT& g,
-                       World & world, const functionT& vnuc, const functionT& vcoul, const functionT& refrho);
-
-	void update_potential(World& world, int iter, double& W, const double Win,
-                real_function_3d& g_old, real_function_3d& g,
-                real_function_3d& x_old, real_function_3d& x,
-                real_function_3d& s_old, real_function_3d& s,
-                const functionT& vnuc, const functionT& vcoul,functionT& vxc, const functionT& refrho);
-
         /// compute the total dipole moment of the molecule
         
         /// @param[in]  rho the total (alpha + beta) density
@@ -694,7 +683,8 @@ namespace madness {
         // For given protocol, solve the DFT/HF/response equations
         void solve(World & world);
 
-	double solve(World & world, const functionT& vnuc, const functionT& vcoul,functionT& vxc, const functionT& refrho);        
+	//Xing
+	double solve(World & world, const functionT& vnuc, const functionT& vcoul,functionT& vxc, const functionT& refrho);  
     };
     
     

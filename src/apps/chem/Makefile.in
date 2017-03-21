@@ -171,20 +171,20 @@ am__libMADchem_la_SOURCES_DIST = correlationfactor.cc molecule.cc \
 	molecularbasis.cc vibanal.cc corepotential.cc atomutil.cc \
 	lda.cc cheminfo.cc distpm.cc SCF.cc gth_pseudopotential.cc \
 	nemo.cc mp2.cc pcm.cc SCFOperators.cc xcfunctional_ldaonly.cc \
-	TDHF.cc CCStructures.cc CC2.cc CCPotentials.cc \
+	TDHF.cc CCStructures.cc CC2.cc CCPotentials.cc oepman.cc \
 	correlationfactor.h molecule.h molecularbasis.h \
 	corepotential.h atomutil.h SCF.h xcfunctional.h mp2.h nemo.h \
 	potentialmanager.h gth_pseudopotential.h molecular_optimizer.h \
 	projector.h SCFOperators.h CCStructures.h \
 	electronic_correlation_factor.h cheminfo.h vibanal.h molopt.h \
-	TDHF.h CC2.h CCPotentials.h xcfunctional_libxc.cc
+	TDHF.h CC2.h CCPotentials.h oepman.h xcfunctional_libxc.cc
 am__objects_1 =
 @MADNESS_HAS_LIBXC_TRUE@am__objects_2 = xcfunctional_libxc.lo
 am_libMADchem_la_OBJECTS = correlationfactor.lo molecule.lo \
 	molecularbasis.lo vibanal.lo corepotential.lo atomutil.lo \
 	lda.lo cheminfo.lo distpm.lo SCF.lo gth_pseudopotential.lo \
 	nemo.lo mp2.lo pcm.lo SCFOperators.lo xcfunctional_ldaonly.lo \
-	TDHF.lo CCStructures.lo CC2.lo CCPotentials.lo \
+	TDHF.lo CCStructures.lo CC2.lo CCPotentials.lo oepman.lo \
 	$(am__objects_1) $(am__objects_2)
 libMADchem_la_OBJECTS = $(am_libMADchem_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -674,7 +674,8 @@ thisinclude_HEADERS = correlationfactor.h molecule.h molecularbasis.h \
                       mp2.h nemo.h potentialmanager.h gth_pseudopotential.h \
                       molecular_optimizer.h projector.h \
                       SCFOperators.h CCStructures.h \
-                      electronic_correlation_factor.h cheminfo.h vibanal.h molopt.h TDHF.h CC2.h CCPotentials.h 
+                      electronic_correlation_factor.h cheminfo.h vibanal.h molopt.h TDHF.h CC2.h CCPotentials.h \
+		      oepman.h
 
 testxc_SOURCES = testxc.cc xcfunctional.h
 testxc_LDADD = libMADchem.la $(MRALIBS)
@@ -688,7 +689,7 @@ libMADchem_la_SOURCES = correlationfactor.cc molecule.cc \
 	molecularbasis.cc vibanal.cc corepotential.cc atomutil.cc \
 	lda.cc cheminfo.cc distpm.cc SCF.cc gth_pseudopotential.cc \
 	nemo.cc mp2.cc pcm.cc SCFOperators.cc xcfunctional_ldaonly.cc \
-	TDHF.cc CCStructures.cc CC2.cc CCPotentials.cc \
+	TDHF.cc CCStructures.cc CC2.cc CCPotentials.cc oepman.cc \
 	$(thisinclude_HEADERS) $(am__append_1)
 libMADchem_la_LDFLAGS = -version-info 0:0:0
 all: all-am
@@ -812,6 +813,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/molecule.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mp2.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nemo.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/oepman.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pcm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plotxc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_SCFOperators.Po@am__quote@

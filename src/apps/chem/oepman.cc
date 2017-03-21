@@ -6,7 +6,7 @@ namespace madness {
     double zero_func(const coordT& x) {return 0.0;}
 
     void OEPMAN::construct_refdens(World& world) {
-	if(!readdens) { //refrho from SCF calculation
+	if(!param.readdens) { //refrho from SCF calculation
           refrho.push_back(calc.make_density(world, calc.aocc, calc.amo));
           if (calc.param.nbeta != 0 && !calc.param.spin_restricted)
               refrho.push_back(calc.make_density(world, calc.bocc, calc.bmo));
@@ -25,22 +25,22 @@ namespace madness {
 	functionT vxc = functionT(factoryT(world).f(zero_func));
 
 	double thresh=FunctionDefaults<3>::get_thresh();
-	if(thresh != oep_thresh)
-	  calc.set_protocol<3>(world, oep_thresh);
+	if(thresh != param.oep_thresh)
+	  calc.set_protocol<3>(world, param.oep_thresh);
 
 	functionT vcoul  = apply(*calc.coulop, refrho[0]);
         functionT vnuc   = calc.potentialmanager->vnuclear();
 
 	//initialize vxc
-	if(oep_init == 1) { //approximate hartree fock exchange
+	if(param.oep_init == 1) { //approximate hartree fock exchange
 	  init_vxc_hfexch(vxc, vcoul);
 	}
 
 	//solve for vxc
-	if(solver == 1) {
+	if(param.solver == 1) {
 	  solver_wy(world, vxc, vcoul, vnuc);
 	}
-	else if(solver == 2) {
+	else if(param.solver == 2) {
 	  solver_new(world, vxc, vcoul, vnuc);
 	}
 
@@ -60,24 +60,24 @@ namespace madness {
 	int iter = 0;
         bool cnvgd = false;
 
-	double w;
+	double w_old, w;
 	functionT x_old, x, g_old, g, s_old, s;
 	x = vxc;
-	while(!cnvgd && iter< oep_max_iter) {
+	while(!cnvgd && iter< param.oep_max_iter) {
            iter++;
 
            if(iter == 1)
              w = calc.solve(world, vnuc, vcoul, x, refrho[0]);
 
            // make the density from the orbitals
-           functionT trial_dens=2.0*make_density(world,calc.aocc,calc.amo);
+           functionT rho=2.0*calc.make_density(world,calc.aocc,calc.amo);
 
            // print out the status
-           functionT g = rho - refrho[0];
+           functionT g = refrho[0] - rho;
            double error=(g).norm2();
            if (world.rank()==0) print(" Error in the density: iteration, diff.norm2()",iter,error);
 
-           if(error < oepconv || fabs(w-w_old) < wconv ){
+           if(error < param.oepconv || fabs(w-w_old) < param.wconv ){
               cnvgd = true;
               vxc = x;
            }
@@ -136,7 +136,7 @@ namespace madness {
         functionT x;
         while(1){
            x = xin + alpha * s;
-           W = solve(world, vnuc, vcoul, x, refrho);
+           W = calc.solve(world, vnuc, vcoul, x, refrho);
 
            if(W < Win + alpha * factor ) return alpha;
            else{
@@ -160,22 +160,22 @@ namespace madness {
         double step[3];
 	for(int i=0; i<3; i++) {
 	   step[i] = 0.0;
-	   if(plot_NGrid[i] > 1)
-	      step[i] = (plot_box[i*2+1] - plot_box[i*2])/(plot_NGrid[i]-1);
+	   if(param.plot_NGrid[i] > 1)
+	      step[i] = (param.plot_box[i*2+1] - param.plot_box[i*2])/(param.plot_NGrid[i]-1);
 	}
 
         FILE* file = fopen(filename.c_str(),"w");
 
-	for(int x=0; x<plot_NGrid[0]; x++)
-	for(int y=0; y<plot_NGrid[1]; y++)
-        for(int z=0; z<plot_NGrid[2]; z++) {
-            double xx = plot_box[0] + step[0] * x;
-	    double yy = plot_box[2] + step[1] * y;
-	    double zz = plot_box[4] + step[2] * z;
+	for(int x=0; x<param.plot_NGrid[0]; x++)
+	for(int y=0; y<param.plot_NGrid[1]; y++)
+        for(int z=0; z<param.plot_NGrid[2]; z++) {
+            double xx = param.plot_box[0] + step[0] * x;
+	    double yy = param.plot_box[2] + step[1] * y;
+	    double zz = param.plot_box[4] + step[2] * z;
 
             coord_3d xyz{xx,yy,zz};
             double c=vxc(xyz);
-            fprintf(file,"%lf %lf\n", r,c);
+            fprintf(file,"%lf %lf %lf %lf\n", xx,yy,zz,c);
         }
         fclose(file);
     }
