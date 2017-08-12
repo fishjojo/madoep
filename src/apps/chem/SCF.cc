@@ -162,7 +162,7 @@ namespace madness {
         }
     }
     
-    SCF::SCF(World & world, const char *filename) {
+    SCF::SCF(World & world, const char *filename) :in_oepman(false){
         FunctionDefaults<3>::set_truncate_mode(1);
         PROFILE_MEMBER_FUNC(SCF);
         if (world.rank() == 0) {
@@ -1553,7 +1553,8 @@ namespace madness {
 
         tensorT eps(nmo);
         for (int i = 0; i < nmo; ++i) {
-            eps(i) = std::min(-0.05, fock(i, i));  //Xing whats this???
+//            eps(i) = std::min(-0.05, fock(i, i));  //Xing whats this???
+	    eps(i) = fock(i, i);
             fock(i, i) -= eps(i);
         }
         vecfuncT fpsi = transform(world, psi, fock, trantol, true);
@@ -1566,6 +1567,14 @@ namespace madness {
         fpsi.clear();
         std::vector<double> fac(nmo, -2.0);
         scale(world, Vpsi, fac);
+/*
+	if(in_oepman){
+	   double ehomo = eps[nmo-1];
+	   for (int i = 0; i < nmo; ++i) {
+		eps(i) -= ehomo;
+	   }
+	}
+*/
         std::vector < poperatorT > ops = make_bsh_operators(world, eps);
         set_thresh(world, Vpsi, FunctionDefaults < 3 > ::get_thresh());
         END_TIMER(world, "Compute residual stuff");
@@ -3836,6 +3845,7 @@ namespace madness {
 	    vlocal.truncate();
 
 	    Ws = inner(vlocal, diffrho);
+	    if(world.rank()==0) print(" int V*(rho-rho0)",Ws);
 	    diffrho.clear(false);
 
             vecfuncT Vpsia, Vpsib;

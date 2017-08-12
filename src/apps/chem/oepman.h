@@ -23,7 +23,8 @@ namespace madness {
 	       bool readdens;		   ///< if true read density from file
 	       int plot_NGrid[3];	   ///< plot grid number
 	       double plot_box[6];	   ///< plot box coords
-
+	       double maxrotn;	 	   ///< max step size
+	       int maxsub;		   ///< max subspace size
 
                OEPparameters(const std::string& input)
 	       :oep_thresh(1e-6)
@@ -33,6 +34,8 @@ namespace madness {
 	       ,readdens(false)
 	       ,solver(1)
 	       ,oep_init(1)
+	       ,maxrotn(0.25)
+	       ,maxsub(5)
 	       {
                 // get the parameters from the input file
                 std::ifstream f(input.c_str());
@@ -106,14 +109,21 @@ namespace madness {
                 functionT& s_old, functionT& s,
                 const functionT& vnuc, const functionT& vcoul, functionT& vxc, const functionT& refrho);
 
-	double line_search_bt(World& world, double& W, const double Win, 
+	double line_search_bt(World& world, double& W, const double Win, bool& reset, 
                                   const functionT& xin, const functionT& s, const functionT& g,
                                   const functionT& vnuc, const functionT& vcoul, const functionT& refrho);
 
+	void update_subspace(World & world, functionT& vxc, vecfuncT & Vpsia, vecfuncT & Vpsib,
+                              tensorT & focka, tensorT & fockb, subspaceT & subspace, tensorT & Q,
+                              double & bsh_residual, double & update_residual);
+
+	double do_step_restriction(World& world, const vecfuncT& mo, vecfuncT& mo_new) const;
+
+	double do_step_restriction_func(World& world, const functionT& vxc, functionT& vxc_new) const;
     public:
 	functionT solve(World& world);
 	void solver_wy(World& world, functionT& vxc, functionT& vcoul, functionT& vnuc);
-	void solver_new(World& world, functionT& vxc, functionT& vcoul, functionT& vnuc) {return;} //NYI
+	void solver_new(World& world, functionT& vxc, functionT& vcoul, functionT& vnuc);
         void anal(World& world, functionT& vxc, const std::string& input);
 
 	//constructor
@@ -122,6 +132,7 @@ namespace madness {
 	,calc(calc1)
 	,param(input)  //read params
 	{
+	  calc.in_oepman = true;
 	  //say hello
 	  greetings(world);
 	  //get targrt density

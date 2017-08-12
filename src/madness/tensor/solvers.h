@@ -125,9 +125,9 @@ namespace madness {
         Tensor<double> s, sumsq;
         long rank;
         gelss(A, b, rcond, x, s, rank, sumsq);
-//         print("singular values", s);
-//         print("rank", rank);
-//         print("solution", x);
+         print("singular values", s);
+         print("rank", rank);
+         print("solution", x);
 
         Tensor<T> c(nvec);
         T sumC = 0.0;

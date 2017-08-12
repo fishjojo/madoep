@@ -317,7 +317,9 @@ namespace madness {
         PCM pcm;
         AtomicBasisSet aobasis;
         functionT mask;
-        
+
+	bool in_oepman; //Xing       
+ 
         /// alpha and beta molecular orbitals
         vecfuncT amo, bmo;
         
