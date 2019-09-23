@@ -3831,7 +3831,7 @@ namespace madness {
 
             double ecoulomb = 0.5 * inner(rho, vcoul);
 	    double exca = 0.0, excb = 0.0; 
-	    exca = inner(rho, vxc); 
+	    exca = inner(rho, vxc);
 
 	    double enla = 0.0, enlb = 0.0;
 

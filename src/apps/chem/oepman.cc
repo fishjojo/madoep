@@ -33,8 +33,8 @@ namespace madness {
         functionT vnuc   = calc.potentialmanager->vnuclear();
 
 	//initialize vxc
-	if(param.oep_init == 1) { //approximate hartree fock exchange
-	  init_vxc_hfexch(vxc, vcoul);
+	if(param.oep_init == 1) { //vxc = -1/n_elec*vcoul
+	  init_vxc_fermi_amaldi(vxc, vcoul);
 	}
 
 	//solve for vxc
@@ -50,7 +50,7 @@ namespace madness {
     }
 
 
-    void OEPMAN::init_vxc_hfexch(functionT& vxc, functionT& vcoul) { //approximate HF exchange
+    void OEPMAN::init_vxc_fermi_amaldi(functionT& vxc, functionT& vcoul) { //approximate HF exchange
         int n_elec = calc.param.nalpha + calc.param.nbeta;
         double factor = -1.0/(double)n_elec;
         vxc = vcoul*factor;

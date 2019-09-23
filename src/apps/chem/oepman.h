@@ -1,8 +1,7 @@
-//Xing
-
 /// \file oep.h
 /// \brief calculate xc potential from given density
 /// \defgroup moldft The molecular density funcitonal and Hartree-Fock code
+/// author: Xing Zhang
 
 #ifndef MADNESS_CHEM_OEPMAN_H__INCLUDED
 #define MADNESS_CHEM_OEPMAN_H__INCLUDED
@@ -18,7 +17,7 @@ namespace madness {
 	       double oepconv;             ///< OEP density convergence
 	       double wconv;		   ///< Wu-Yang W convergence
 	       int oep_max_iter;	   ///< max number of iteration
-	       int oep_init; 		   ///< initil vxc type: 0, zero; 1, HF exchange 
+	       int oep_init; 		   ///< initil vxc type: 0, zero; 1, Fermi-Amaldi
 	       int solver;		   ///< OEP solvers: 1, Wu-Yang; 2, new
 	       bool readdens;		   ///< if true read density from file
 	       int plot_NGrid[3];	   ///< plot grid number
@@ -99,7 +98,7 @@ namespace madness {
 	void construct_refdens(World& world);
 	void read_dens_from_file(){return;}
 
-	void init_vxc_hfexch(functionT& vxc, functionT& vcoul);
+	void init_vxc_fermi_amaldi(functionT& vxc, functionT& vcoul);
 
 	void plot_vxc(const functionT& vxc, const std::string filename);
 
@@ -127,9 +126,9 @@ namespace madness {
         void anal(World& world, functionT& vxc, const std::string& input);
 
 	//constructor
-	OEPMAN(World& world1, SCF& calc1, const std::string& input)
-	:world(world1)
-	,calc(calc1)
+	OEPMAN(World& world0, SCF& calc0, const std::string& input)
+	:world(world0)
+	,calc(calc0)
 	,param(input)  //read params
 	{
 	  calc.in_oepman = true;
